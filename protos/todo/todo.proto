@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "TodoProto";
+option objc_class_prefix = "TD";
+option go_package = "github.com/somen440/datta/datta_server/pb/todo";
+
+package todo;
+
+service TodoService {
+  rpc CreateTodo (CreateTodoRequest) returns (CreateTodoReply) {}
+  rpc GetTodoList (GetTodoListRequest) returns (GetTodoListReply) {}
+  rpc UpdateTodoTitle (UpdateTodoTitleRequest) returns (UpdateTodoTitleReply) {}
+  rpc DoneTodo (DoneTodoRequest) returns (DoneTodoReply) {}
+  rpc UnDoneTodo (UnDoneTodoRequest) returns (UnDoneTodoReply) {}
+  rpc DeleteTodo (DeleteTodoRequest) returns (DeleteTodoReply) {}
+}
+
+// Todo
+message Todo {
+  // TodoのグローバルユニークID。正数。
+  int64 id = 1;
+  // タイトル
+  string title = 2;
+  // 完了したか
+  bool done = 3;
+  // 作成日時 RFC3339
+  string created = 4;
+}
+
+message CreateTodoRequest {
+  string title = 1;
+}
+
+message CreateTodoReply {
+  Todo todo = 1;
+}
+
+message GetTodoListRequest {
+}
+
+message GetTodoListReply {
+  repeated Todo todoList = 1;
+}
+
+message UpdateTodoTitleRequest {
+  int64 id = 1;
+  string title = 2;
+}
+
+message UpdateTodoTitleReply {
+}
+
+message DoneTodoRequest {
+  int64 id = 1;
+}
+
+message DoneTodoReply {
+}
+
+message UnDoneTodoRequest {
+  int64 id = 1;
+}
+
+message UnDoneTodoReply {
+}
+
+message DeleteTodoRequest {
+  int64 id = 1;
+}
+
+message DeleteTodoReply {
+}
