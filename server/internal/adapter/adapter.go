@@ -14,6 +14,6 @@ func NewAdapter(
 	todoAdapter *todo.TdAdapter,
 ) *Adapter {
 	return &Adapter{
-		recorderAdapter,
+		todoAdapter,
 	}
 }

@@ -2,8 +2,6 @@ package grpc
 
 import (
 	"github.com/somen440/flutter-go-todo/server/internal/di"
-	hellopb "github.com/somen440/flutter-go-todo/server/internal/pb/helloworld"
-	recorderpb "github.com/somen440/flutter-go-todo/server/internal/pb/recorder"
 	todopb "github.com/somen440/flutter-go-todo/server/internal/pb/todo"
 	"github.com/somen440/flutter-go-todo/server/internal/util"
 
@@ -50,9 +48,6 @@ func NewServer() *grpc.Server {
 	)
 
 	adapter := di.NewAdapter()
-	hellopb.RegisterGreeterService(grpcServer, &hellopb.GreeterService{
-		SayHello: adapter.SayHello,
-	})
 	todopb.RegisterTodoServiceService(grpcServer, &todopb.TodoServiceService{
 		CreateTodo:      adapter.CreateTodo,
 		GetTodoList:     adapter.GetTodoList,
@@ -60,9 +55,6 @@ func NewServer() *grpc.Server {
 		DoneTodo:        adapter.DoneTodo,
 		UnDoneTodo:      adapter.UnDoneTodo,
 		DeleteTodo:      adapter.DeleteTodo,
-	})
-	recorderpb.RegisterRecorderServiceService(grpcServer, &recorderpb.RecorderServiceService{
-		Upload: adapter.Upload,
 	})
 
 	return grpcServer

@@ -8,7 +8,7 @@ import (
 // NewAdapter return Adapter
 func NewAdapter() *adapter.Adapter {
 	return adapter.NewAdapter(
-		NewRecorderAdapter(),
+		NewTodoAdapter(),
 	)
 }
 
