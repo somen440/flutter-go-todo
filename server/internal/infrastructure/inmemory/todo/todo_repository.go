@@ -96,6 +96,7 @@ func (r *Repository) Delete(ctx context.Context, id todo.ID) error {
 		return fmt.Errorf("todo: Delete failed. id=%d: %w", id, util.ErrNotFound)
 	}
 	delete(r.todoMap, id)
+	r.todoN--
 
 	return nil
 }

@@ -3,6 +3,7 @@ package todo
 import (
 	"context"
 
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus/ctxlogrus"
 	"github.com/somen440/flutter-go-todo/server/internal/domain/entity/todo"
 	todosvc "github.com/somen440/flutter-go-todo/server/internal/domain/service/todo"
 )
@@ -23,6 +24,9 @@ func NewUsecase(
 
 // Create 作成
 func (uc *Usecase) Create(ctx context.Context, title string) (*todo.Todo, error) {
+	l := ctxlogrus.Extract(ctx)
+	l.WithField("title", title).Debug("todo: usecase Create started")
+
 	return uc.todoSvc.Create(ctx, title)
 }
 

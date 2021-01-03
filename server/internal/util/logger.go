@@ -14,6 +14,7 @@ func Logger() *logrus.Logger {
 	log = logrus.New()
 
 	// todo: Cloud 環境では JSON Formatter へ
+	log.Level = logrus.DebugLevel
 
 	return log
 }

@@ -7,10 +7,12 @@ import (
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_logrus "github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -30,9 +32,17 @@ func NewServer() *grpc.Server {
 	}
 	grpc_logrus.ReplaceGrpcLogger(logrusEntry)
 
+	recoveryHandler := func(p interface{}) (err error) {
+		return status.Errorf(codes.Unknown, "panic triggered: %+v", p)
+	}
+	recoveryOpts := []grpc_recovery.Option{
+		grpc_recovery.WithRecoveryHandler(recoveryHandler),
+	}
+
 	unaryMiddleware := grpc_middleware.WithUnaryServerChain(
 		grpc_ctxtags.UnaryServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 		grpc_logrus.UnaryServerInterceptor(logrusEntry, logrusOpts...),
+		grpc_recovery.UnaryServerInterceptor(recoveryOpts...),
 		util.UnaryRequestIDInterceptor(),
 		util.UnaryErrorInterceptor(),
 		util.UnaryTimerInterceptor(),
@@ -40,6 +50,7 @@ func NewServer() *grpc.Server {
 	streamMiddleware := grpc_middleware.WithStreamServerChain(
 		grpc_ctxtags.StreamServerInterceptor(grpc_ctxtags.WithFieldExtractor(grpc_ctxtags.CodeGenRequestFieldExtractor)),
 		grpc_logrus.StreamServerInterceptor(logrusEntry, logrusOpts...),
+		grpc_recovery.StreamServerInterceptor(recoveryOpts...),
 	)
 
 	grpcServer := grpc.NewServer(
